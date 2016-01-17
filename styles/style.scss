@@ -1,0 +1,33 @@
+@import 'setup';
+
+body {
+	background: white;
+}
+
+section.searchBar {
+	width: 100%;
+	position: fixed;
+	top: 0;
+	background: white;
+}
+
+main.resultWrapper {
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	margin-top: 100px;
+}
+
+section.result {
+	background: white;
+	width: 400px;
+}
+
+i {
+	color: red;
+	padding-right: 10px;
+}
+
+h3 {
+	display: block;
+}
