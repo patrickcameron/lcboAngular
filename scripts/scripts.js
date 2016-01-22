@@ -1,4 +1,4 @@
-var storeID = 6;
+var storeID = 3;
 
 var searchOptions = '';
 
@@ -6,25 +6,51 @@ var isOnSale = '';
 
 var whereStringResult = '';
 
+var pageNumber = 1;
+
 var app = angular.module('lcboSearch', []);
 
-app.controller('searchController', function($scope) {
+var filterData = function(data) {
+	for (var i in data.result) {
+		// cut out "Region Not Specified" from search results
+		var temp = data.result[i].origin
+		if (temp.substring(temp.length-0, temp.length-22) == ", Region Not Specified") {
+			temp = temp.slice(0, temp.length-22);
+			data.result[i].origin = temp;
+		};
+		// add spaces around 'x' in quantity information (eg. "2x250 ml --> 2 x 250 ml")
+		var temp2 = data.result[i].package;
+		if (temp2.charAt(1) == 'x') {
+			temp2 = temp2.charAt(0) + ' ' + temp2.charAt(1) + ' ' + temp2.substring(2);
+			data.result[i].package = temp2;
+		};
+	};
+};
 
+app.controller('searchController', function($scope) {
+	
 	$scope.searchAPI = function() {
 		$.ajax({
 		    url: 'http://lcboapi.com/stores/' + storeID + '/products',
 		    dataType: 'jsonp',
 		    method: 'GET',
 		    data: {
-		          key: lcboKey,
-		          per_page: 100,
-		          where: whereStringResult,
-		          q: $scope.search
+		    	page: pageNumber,
+		        key: lcboKey,
+		        per_page: 100,
+		        where: whereStringResult,
+		        q: $scope.search
 		    	}
 		    }).then(function(data) {
 		    	console.log(data);
+		    	filterData(data);
 		    	$scope.lcbo_data = data.result;
+		    	$scope.totalResults = data.pager.total_record_count;
 		    	$scope.$apply();
+		    	if (data.pager.is_final_page == false) {
+		    		pageNumber++;
+		    		$scope.searchAPI;
+		    	};
 		    	$scope.itemsTotal = $('.result').length;
 		    	$scope.itemsInStock = $('.result:visible').length;
 		    	$scope.$digest();

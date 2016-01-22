@@ -135,7 +135,9 @@ section.searchBar {
   width: 100%;
   position: fixed;
   top: 0;
-  background: white; }
+  background: white;
+  z-index: 999;
+  padding: 10px 10px 10px 20px; }
 
 main.resultWrapper {
   width: 100%;
@@ -149,7 +151,9 @@ main.resultWrapper {
 
 section.result {
   background: white;
-  width: 400px; }
+  width: 300px;
+  position: relative;
+  margin: 20px; }
 
 i {
   color: red;
@@ -157,3 +161,8 @@ i {
 
 h3 {
   display: block; }
+
+div.onSaleTag {
+  position: absolute;
+  top: 0;
+  right: 0; }
