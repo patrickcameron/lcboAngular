@@ -18,47 +18,57 @@
 	  <div>Javascript is either disabled or not supported in your browser. Please enable it or use a Javascript enabled browser.</div>
 	</noscript>
 
-<!-- SEARCH BAR -->
+<!-- SEARCH BAR / CHECKBOXES -->
 
 	<section class="searchBar">
-		<form ng-submit="reload()" novalidate norefresh>
-			<input type="search" ng-model="search"/>
+		<form ng-submit="searchAPI()" class="searchForm" novalidate norefresh>
+
+			<input type="search" ng-model="search" autofocus/>
+
+			<span ng-repeat="item in checkboxes">
+				<label for="{{item.name}}">
+					<input type="checkbox" ng-model="item.checked" ng-click="updateSelection($index, checkboxes)" id="{{item.name}}" />
+					{{item.name}}
+				</label>
+			</span>
+
+			<label for="onSale">
+				<input type="checkbox" ng-model="onSale" id="onSale">
+				<em><strong>On Sale</strong></em>
+			</label>
 
 			<input type="submit" value="Search">
 
-			<input type="checkbox" class="searchCheckbox" ng-model="input_vqa" ng-click="vqa()" value="vqa" id="vqa">
-			<label for="vqa">VQA</label>
-
-			<input type="checkbox" class="searchCheckbox" ng-model="input_ocb" ng-click="ocb()" value="ocb" id="ocb">
-			<label for="ocb">Ontario Craft Brew</label>
-
-			<input type="checkbox" class="searchCheckbox" ng-model="input_kosher" ng-click="kosher()" value="kosher" id="kosher">
-			<label for="kosher">Kosher</label>
-
-			<input type="checkbox" class="searchCheckbox" ng-model="input_glutenFree" ng-click="glutenFree()" value="glutenFree" id="glutenFree">
-			<label for="glutenFree">Gluten Free</label>
-
-			<input type="checkbox" class="onSaleCheckbox" ng-model="input_onSale" ng-click="onSale()" value="onSale" id="onSale">
-			<label for="onSale"><em><strong>On Sale</strong></em></label>
 		</form>
 
-		<div class="count">{{itemsInStock}} out of {{totalResults}} products are in stock at your store</div>
+		<div class="count" ng-show="showResultCount">{{itemsInStock}} out of {{totalResults}} LCBO products are in stock at your store</div>
 	</section>
 
 <!-- RESULTS SECTION -->
 
 	<main class="resultWrapper">
+
 		<section class="result" ng-repeat="data in lcbo_data" ng-show="{{data.quantity > 0}}">
+
+			<!-- product image -->
 			<img ng-show="data.image_thumb_url" ng-src="{{data.image_thumb_url}}" ng-class="" alt="image of {{data.name}}">
 			<img ng-show="data.image_thumb_url == null" src="images/bottle.jpeg">
+
+			<!-- product name -->
 			<h3>{{data.name}}</h3>
+
+			<!-- product quantity -->
 			<h4>{{data.package | lowercase}}</h4>
-			<h4>{{0.01 * data.price_in_cents | currency : $ : 2}}</h4>
-		 	<h4 ng-show="{{data.total_package_units > 1}}"></h4>
-		 	<h4 class="onSaleTag" ng-show="{{data.has_limited_time_offer}}"><strong>ON SALE!</strong> - {{0.01 * (data.regular_price_in_cents - data.price_in_cents) | currency : $ : 2}}</h4>
+
+			<!-- product price and sale price if applicable-->
+			<h4 ng-hide="data.has_limited_time_offer">{{0.01 * data.price_in_cents | currency : $ : 2}}</h4>
+			<h4 ng-show="data.has_limited_time_offer">ON SALE! <strike>{{0.01 * data.regular_price_in_cents | currency : $ : 2}}</strike> {{0.01 * data.price_in_cents | currency : $ : 2}} -{{0.01 * (data.regular_price_in_cents - data.price_in_cents) | currency : $ : 2}}</h4>
+		 	
+		 	<!-- quantity and low quantity warning -->
 		 	<h3>{{data.quantity}} in stock at your store</h3>
 		 	<h4 ng-show="data.quantity <= 5"><i ng-show="data.quantity <= 5" class="fa fa-exclamation-triangle"></i>Low stock count. May be out of stock!</h4>
 		 	<h4>Origin: {{data.origin}}</h4>
+
 		 </section>
 	</main>
 
