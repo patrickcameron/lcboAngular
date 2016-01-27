@@ -106,7 +106,7 @@ app.controller('searchController', ['$geolocation', '$scope', function ($geoloca
 	var pendingTask;
 
 	$scope.newSearch = function() {
-		
+
 		if ($scope.searchOrder === "limited_time_offer_savings_in_cents.desc") {
 			$scope.onSale = true;
 		}
