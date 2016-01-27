@@ -1,39 +1,67 @@
-var storeID = 3;
-
 var filterData = function(data) {
 	for (var i in data.result) {
-		// cut out "Region Not Specified" from search results
-		var temp = data.result[i].origin
-		if (temp.substring(temp.length-0, temp.length-22) == ", Region Not Specified") {
-			temp = temp.slice(0, temp.length-22);
-			data.result[i].origin = temp;
+
+		// cut out "Region Not Specified" from country of origin result fields
+		if (data.result[i].origin.substring(data.result[i].origin.length-0, data.result[i].origin.length-22) == ", Region Not Specified") {
+			data.result[i].origin = data.result[i].origin.slice(0, data.result[i].origin.length-22);
+			data.result[i].origin = data.result[i].origin;
 		};
+
 		// add spaces around 'x' in quantity information (eg. "2x250 ml --> 2 x 250 ml")
-		var temp2 = data.result[i].package;
-		if (temp2.charAt(1) == 'x') {
-			temp2 = temp2.charAt(0) + ' ' + temp2.charAt(1) + ' ' + temp2.substring(2);
-			data.result[i].package = temp2;
+		if (data.result[i].package.charAt(1) == 'x') {
+			data.result[i].package = data.result[i].package.charAt(0) + ' ' + data.result[i].package.charAt(1) + ' ' + data.result[i].package.substring(2);
 		};
 	};
 };
 
 var app = angular.module('lcboSearch', ['ngGeolocation']);
 
-app.controller('getUserLocation', ['$geolocation', '$scope', function($geolocation, $scope) {
-		$geolocation.getCurrentPosition({
+app.controller('searchController', ['$geolocation', '$scope', function ($geolocation, $scope) {
+
+	$scope.nearestStores = [];
+
+	$scope.storeIsFound = false;
+
+	$scope.selectedStoreID;
+
+	$scope.searchOrder = "";
+
+	//use browser location to find closest LCBO stores
+	$geolocation.getCurrentPosition({
 			timeout: 60000
-		}).then(function(position) {
-			$scope.userPosition = position;
-			console.log($scope.userPosition);
+		}).then(function (position) {
+			console.log(position);
+			$.ajax({
+			    url: 'http://lcboapi.com/stores',
+			    dataType: 'jsonp',
+			    method: 'GET',
+			    data: {
+			        key: lcboKey,
+			        per_page: 5,
+			        lat: position.coords.latitude,
+			        lon: position.coords.longitude
+			    	}
+			    }).then(function(data) {
+			    	$scope.nearestStores = data.result;
+			    	console.log($scope.nearestStores);
+			    	$scope.selectedStoreID = data.result[0].id;
+			    	$scope.storeIsFound = true;
+			    	$scope.search = suggestedSearches[Math.floor(Math.random()*suggestedSearches.length)];
+			    	$scope.searchStore();
+			    	$scope.$digest();
+				});
 		});
-}]);
 
 
-app.controller('searchController', function($scope) {
+	// search store inventory and return results
 
-	$scope.showResultCount = false;
+	$scope.modifyStockCount;
 
-	$scope.searchAPI = function() {
+	$scope.searchStore = function() {
+
+		$scope.modifyStockCount = false;
+
+		$('.resultsWrapper').html('');
 
 		var searchOptionsString = [];
 
@@ -45,38 +73,53 @@ app.controller('searchController', function($scope) {
 
 		if ($scope.onSale === true) {
 			searchOptionsString.push('has_limited_time_offer');
-			console.log(typeof searchOptionsString);
 		}
 
 		searchOptionsString = searchOptionsString.toString();
 
-		console.log('search options string = ' + searchOptionsString);
-
 		$.ajax({
-		    url: 'http://lcboapi.com/stores/' + storeID + '/products',
+		    url: 'http://lcboapi.com/stores/' + $scope.selectedStoreID + '/products',
 		    dataType: 'jsonp',
 		    method: 'GET',
 		    data: {
 		        key: lcboKey,
 		        per_page: 100,
 		        where: searchOptionsString,
+		        order: $scope.searchOrder,
 		        q: $scope.search
 		    	}
 		    }).then(function(data) {
 		    	console.log(data);
 		    	filterData(data);
+		    	$scope.store_data = data.store;
 		    	$scope.lcbo_data = data.result;
-		    	$scope.totalResults = data.pager.total_record_count;
+
 		    	$scope.$apply();
-
-		    	$scope.itemsTotal = $('.result').length;
-		    	$scope.itemsInStock = $('.result:visible').length;
-
-		    	$scope.showResultCount = true;
 
 		    	$scope.$digest();
 			});
 	};
+
+
+	// automatically update search when new input is entered into search bar
+
+	var pendingTask;
+
+	$scope.newSearch = function() {
+		
+		if ($scope.searchOrder === "limited_time_offer_savings_in_cents.desc") {
+			$scope.onSale = true;
+		}
+
+		if (pendingTask) {
+			clearTimeout(pendingTask);
+		}
+
+		pendingTask = setTimeout($scope.searchStore, 800);
+	};
+
+
+	//data for search options checkboxes
 
 	$scope.checkboxes = [{
           name: 'VQA',
@@ -95,21 +138,11 @@ app.controller('searchController', function($scope) {
 
     $scope.onSale = false;
 
+    //only one search checkbox can be selected at a time
 	$scope.updateSelection = function(position, checkboxes) {
         angular.forEach(checkboxes, function(item, index) {
           if (position != index) 
             item.checked = false;
         });
       };
-
-	$('input.searchCheckbox').on('change', function() {
-	    $('input.searchCheckbox').not(this).prop('checked', false);
-	});
-
-	if ($scope.search === undefined) {
-		$scope.search = suggestedSearches[Math.floor(Math.random()*suggestedSearches.length)];
-	};
-
-	$scope.searchAPI();
-
-});
+}]);

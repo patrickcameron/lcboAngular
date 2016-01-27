@@ -13,6 +13,10 @@ section.searchBar {
 	padding: 10px 10px 10px 20px;
 }
 
+label {
+	white-space: nowrap;
+}
+
 main.resultWrapper {
 	width: 100%;
 	display: flex;
@@ -22,7 +26,7 @@ main.resultWrapper {
 
 section.result {
 	background: white;
-	width: 300px;
+	width: 280px;
 	position: relative;
 	margin: 20px;
 }
