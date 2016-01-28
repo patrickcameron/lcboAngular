@@ -1,19 +1,3 @@
-var filterData = function(data) {
-	for (var i in data.result) {
-
-		// cut out "Region Not Specified" from country of origin result fields
-		if (data.result[i].origin.substring(data.result[i].origin.length-0, data.result[i].origin.length-22) == ", Region Not Specified") {
-			data.result[i].origin = data.result[i].origin.slice(0, data.result[i].origin.length-22);
-			data.result[i].origin = data.result[i].origin;
-		};
-
-		// add spaces around 'x' in quantity information (eg. "2x250 ml --> 2 x 250 ml")
-		if (data.result[i].package !== null && data.result[i].package.charAt(1) == 'x') {
-			data.result[i].package = data.result[i].package.charAt(0) + ' ' + data.result[i].package.charAt(1) + ' ' + data.result[i].package.substring(2);
-		};
-	};
-};
-
 var app = angular.module('lcboSearch', ['ngGeolocation']);
 
 app.controller('searchController', ['$geolocation', '$scope', function ($geolocation, $scope) {
@@ -25,6 +9,47 @@ app.controller('searchController', ['$geolocation', '$scope', function ($geoloca
 	$scope.selectedStoreID;
 
 	$scope.searchOrder = "";
+
+	$scope.showNoResultsMessage = false;
+
+	var lastSearch;
+
+	// various data filters for raw API data
+
+	var filterData = function(data) {
+
+		var resultsCounter = false;
+		$scope.showNoResultsMessage = false;
+
+		for (var i in data.result) {
+
+			// cut out "Region Not Specified" from country of origin result fields
+			if (data.result[i].origin.substring(data.result[i].origin.length-0, data.result[i].origin.length-22) == ", Region Not Specified") {
+				data.result[i].origin = data.result[i].origin.slice(0, data.result[i].origin.length-22);
+				data.result[i].origin = data.result[i].origin;
+			};
+
+			// add spaces around 'x' in quantity information (eg. "2x250 ml --> 2 x 250 ml")
+			if (data.result[i].package !== null && data.result[i].package.charAt(1) == 'x') {
+				data.result[i].package = data.result[i].package.charAt(0) + ' ' + data.result[i].package.charAt(1) + ' ' + data.result[i].package.substring(2);
+			};
+
+			if (data.result[i].quantity > 0) {
+				resultsCounter = true;
+			}
+		};
+
+		if (data.pager.total_record_count === 0) {
+			resultsCounter = false;
+		}
+
+		if (resultsCounter === false) {
+			console.log('no results');
+			$scope.showNoResultsMessage = true;
+			$scope.$digest();
+			$scope.$apply();
+		}
+	};
 
 	//use browser location to find closest LCBO stores
 	$geolocation.getCurrentPosition({
@@ -47,7 +72,6 @@ app.controller('searchController', ['$geolocation', '$scope', function ($geoloca
 			    	console.log($scope.nearestStores);
 			    	$scope.selectedStoreID = data.result[0].id;
 			    	$scope.storeIsFound = true;
-			    	$scope.randomSearch();
 			    	$scope.searchStore();
 			    	$scope.$digest();
 				});
@@ -55,6 +79,7 @@ app.controller('searchController', ['$geolocation', '$scope', function ($geoloca
 
 	$scope.randomSearch = function() {
 		$scope.search = suggestedSearches[Math.floor(Math.random()*suggestedSearches.length)];
+
 		$scope.newSearch();
 	}
 

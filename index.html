@@ -15,7 +15,7 @@
 
 <body ng-controller="searchController">
 	<noscript>
-	  <div>Javascript is either disabled or not supported in your browser. Please enable it or use a Javascript enabled browser.</div>
+	  <div class="noJavascript">Javascript is either disabled or not supported in your browser. Please enable it or use a Javascript enabled browser.</div>
 	</noscript>
 
 <!-- SEARCH BAR / CHECKBOXES -->
@@ -29,7 +29,7 @@
 
 		<form ng-submit="searchStore()" class="searchForm" novalidate norefresh>
 
-			<input type="search" ng-change="newSearch()" ng-model="search" autofocus/>
+			<input type="search" ng-change="newSearch()" ng-model="search" autofocus />
 
 			<span ng-repeat="item in checkboxes">
 				<label for="{{item.name}}">
@@ -59,6 +59,8 @@
 
 		</form>
 	
+		<br>
+
 		<strong>or: </strong><button ng-click="randomSearch()">Try a Random Search</button>
 
 	</section>
@@ -67,7 +69,9 @@
 
 	<main class="resultWrapper">
 
-		<section class="noResultsMessage" ng-show="noResultsMessage"></section>
+		<section class="noResultsMessage" ng-show="showNoResultsMessage">
+			<h1>NO RESULTS!</h1>
+		</section>
 
 		<section class="result" ng-repeat="data in lcbo_data" ng-show="{{data.quantity > 0}}">
 
