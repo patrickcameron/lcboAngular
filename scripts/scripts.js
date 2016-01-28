@@ -46,22 +46,25 @@ app.controller('searchController', ['$geolocation', '$scope', function ($geoloca
 			    	console.log($scope.nearestStores);
 			    	$scope.selectedStoreID = data.result[0].id;
 			    	$scope.storeIsFound = true;
-			    	$scope.search = suggestedSearches[Math.floor(Math.random()*suggestedSearches.length)];
+			    	$scope.randomSearch();
 			    	$scope.searchStore();
 			    	$scope.$digest();
 				});
 		});
 
+	$scope.randomSearch = function() {
+		$scope.search = suggestedSearches[Math.floor(Math.random()*suggestedSearches.length)];
+		$scope.newSearch();
+	}
+
 
 	// search store inventory and return results
 
-	$scope.modifyStockCount;
-
 	$scope.searchStore = function() {
 
-		$scope.modifyStockCount = false;
+		$('.result').empty();
 
-		$('.resultsWrapper').html('');
+		$scope.modifyStockCount = false;
 
 		var searchOptionsString = [];
 

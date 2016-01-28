@@ -142,6 +142,9 @@ section.searchBar {
 label {
   white-space: nowrap; }
 
+input[type=search]:focus, button {
+  outline: none; }
+
 main.resultWrapper {
   width: 100%;
   display: -webkit-flex;

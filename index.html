@@ -43,19 +43,23 @@
 				<em><strong>On Sale</strong></em>
 			</label>
 
-			<!-- ng-model="" -->
-			<!-- ng-show="storeIsFound" ng-change="searchStore()" -->
+			<br>
 
+			<strong>Sort by:</strong>
 			<select ng-model="searchOrder" ng-change="newSearch()">
 				<option value="">Relevance</option>
 				<option value="price_in_cents.desc">Price (Highest)</option>
 				<option value="price_in_cents.asc">Prince (Lowest)</option>
 				<option value="volume_in_milliliters.desc">Total volume (Highest)</option>
 				<option value="volume_in_milliliters.asc">Total volume (Lowest)</option>
+				<option value="price_per_liter_in_cents:desc">Price per volume (Highest)</option>
+				<option value="price_per_liter_in_cents:asc">Price per volume (Lowest)</option>
 				<option value="limited_time_offer_savings_in_cents.desc">Largest sale discount</option>
 			</select>
 
 		</form>
+
+		<button ng-click="randomSearch()">Try a Random Search</button>
 
 	</section>
 
@@ -82,7 +86,7 @@
 			<h4 ng-show="data.has_limited_time_offer">ON SALE! <strike>{{0.01 * data.regular_price_in_cents | currency : $ : 2}}</strike> {{0.01 * data.price_in_cents | currency : $ : 2}}</h4>
 		 	
 		 	<!-- quantity and low quantity warning -->
-		 	<h3>{{data.quantity}} in stock at your store</h3>
+		 	<h4>{{data.quantity}} in stock at {{store_data.name}}</h4>
 		 	<h4 ng-show="data.quantity <= 5"><i ng-show="data.quantity <= 5" class="fa fa-exclamation-triangle"></i>Low stock count. May be out of stock!</h4>
 		 	<h4>Origin: {{data.origin}}</h4>
 
