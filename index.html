@@ -52,16 +52,16 @@
 				<option value="price_in_cents.asc">Prince (Lowest)</option>
 				<option value="volume_in_milliliters.desc">Total volume (Highest)</option>
 				<option value="volume_in_milliliters.asc">Total volume (Lowest)</option>
-				<option value="price_per_liter_in_cents:desc">Price per volume (Highest)</option>
-				<option value="price_per_liter_in_cents:asc">Price per volume (Lowest)</option>
+				<option value="price_per_liter_in_cents.desc">Price per volume (Highest)</option>
+				<option value="price_per_liter_in_cents.asc">Price per volume (Lowest)</option>
 				<option value="limited_time_offer_savings_in_cents.desc">Largest sale discount</option>
 			</select>
 
 		</form>
 	
-		<br>
+<!-- 		<br>
 
-		<strong>or: </strong><button ng-click="randomSearch()">Try a Random Search</button>
+		<strong>or: </strong><button ng-click="randomSearch()">Try a Random Search</button> -->
 
 	</section>
 
@@ -81,6 +81,9 @@
 
 			<!-- product name -->
 			<h3>{{data.name}}</h3>
+
+			<!-- primary category -->
+			<h4>{{data.secondary_category}}</h4>
 
 			<!-- product quantity -->
 			<h4>{{data.package | lowercase}}</h4>

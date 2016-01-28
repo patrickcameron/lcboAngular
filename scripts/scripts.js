@@ -37,6 +37,13 @@ app.controller('searchController', ['$geolocation', '$scope', function ($geoloca
 			if (data.result[i].quantity > 0) {
 				resultsCounter = true;
 			}
+
+			if (data.result[i].secondary_category === "Bags & Boxes") {
+				data.result[i].quantity = 0;
+			}
+
+			console.log(data.result[i].secondary_category.length);
+			
 		};
 
 		if (data.pager.total_record_count === 0) {
@@ -44,7 +51,6 @@ app.controller('searchController', ['$geolocation', '$scope', function ($geoloca
 		}
 
 		if (resultsCounter === false) {
-			console.log('no results');
 			$scope.showNoResultsMessage = true;
 			$scope.$digest();
 			$scope.$apply();
@@ -72,7 +78,7 @@ app.controller('searchController', ['$geolocation', '$scope', function ($geoloca
 			    	console.log($scope.nearestStores);
 			    	$scope.selectedStoreID = data.result[0].id;
 			    	$scope.storeIsFound = true;
-			    	$scope.searchStore();
+				    $scope.randomSearch();
 			    	$scope.$digest();
 				});
 		});
@@ -146,6 +152,8 @@ app.controller('searchController', ['$geolocation', '$scope', function ($geoloca
 
 	$scope.newSearch = function() {
 
+		$scope.showNoResultsMessage = false;
+
 		$('.result').empty();
 		
 		if ($scope.searchOrder === "limited_time_offer_savings_in_cents.desc") {
@@ -187,12 +195,12 @@ app.controller('searchController', ['$geolocation', '$scope', function ($geoloca
         });
       };
 
-    $scope.loadMoreResults = function() {
-    	$(window).scroll(function() {
-    	   if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
-    	       alert("near bottom!");
-    	   }
-    	});
-    }
+    // $scope.loadMoreResults = function() {
+    // 	$(window).scroll(function() {
+    // 	   if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
+    // 	       alert("near bottom!");
+    // 	   }
+    // 	});
     // }
+
 }]);
