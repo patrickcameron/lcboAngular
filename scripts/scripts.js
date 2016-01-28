@@ -42,7 +42,7 @@ app.controller('searchController', ['$geolocation', '$scope', function ($geoloca
 				data.result[i].quantity = 0;
 			}
 
-			console.log(data.result[i].secondary_category.length);
+			// console.log(data.result[i].secondary_category.length);
 			
 		};
 
