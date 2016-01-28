@@ -8,7 +8,7 @@ var filterData = function(data) {
 		};
 
 		// add spaces around 'x' in quantity information (eg. "2x250 ml --> 2 x 250 ml")
-		if (data.result[i].package.charAt(1) == 'x') {
+		if (data.result[i].package !== null && data.result[i].package.charAt(1) == 'x') {
 			data.result[i].package = data.result[i].package.charAt(0) + ' ' + data.result[i].package.charAt(1) + ' ' + data.result[i].package.substring(2);
 		};
 	};
@@ -42,6 +42,7 @@ app.controller('searchController', ['$geolocation', '$scope', function ($geoloca
 			        lon: position.coords.longitude
 			    	}
 			    }).then(function(data) {
+			    	console.log(data);
 			    	$scope.nearestStores = data.result;
 			    	console.log($scope.nearestStores);
 			    	$scope.selectedStoreID = data.result[0].id;
@@ -62,7 +63,8 @@ app.controller('searchController', ['$geolocation', '$scope', function ($geoloca
 
 	$scope.searchStore = function() {
 
-		$('.result').empty();
+		$scope.store_data = [];
+		$scope.lcbo_data = [];
 
 		$scope.modifyStockCount = false;
 
@@ -95,11 +97,20 @@ app.controller('searchController', ['$geolocation', '$scope', function ($geoloca
 		    	console.log(data);
 		    	filterData(data);
 		    	$scope.store_data = data.store;
-		    	$scope.lcbo_data = data.result;
+		    	for (var i in data.result) {
+					$scope.lcbo_data.push(data.result[i]);
+				};
+		    	$scope.pager_data = data.pager;
 
 		    	$scope.$apply();
 
 		    	$scope.$digest();
+
+		    	if ($scope.pager_data.total_pages > 1) {
+		    		if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
+		    		       alert("near bottom!");
+		    		   }
+		    	};
 			});
 	};
 
@@ -109,6 +120,8 @@ app.controller('searchController', ['$geolocation', '$scope', function ($geoloca
 	var pendingTask;
 
 	$scope.newSearch = function() {
+
+		$('.result').empty();
 		
 		if ($scope.searchOrder === "limited_time_offer_savings_in_cents.desc") {
 			$scope.onSale = true;
@@ -148,4 +161,13 @@ app.controller('searchController', ['$geolocation', '$scope', function ($geoloca
             item.checked = false;
         });
       };
+
+    $scope.loadMoreResults = function() {
+    	$(window).scroll(function() {
+    	   if($(window).scrollTop() + $(window).height() > $(document).height() - 100) {
+    	       alert("near bottom!");
+    	   }
+    	});
+    }
+    // }
 }]);
