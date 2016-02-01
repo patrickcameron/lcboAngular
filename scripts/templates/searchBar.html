@@ -1,0 +1,49 @@
+<nav class="searchBar">
+
+	<section class="searchOptions">
+
+		<form ng-submit="searchStore()" class="searchForm" novalidate norefresh>
+
+			<input type="text" ng-change="newSearch()" ng-model="search" autofocus />
+
+			<span ng-repeat="item in checkboxes">
+				<label for="{{item.name}}">
+					<input type="checkbox" ng-model="item.checked" ng-click="updateSelection($index, checkboxes)" id="{{item.name}}" ng-change="newSearch()" />
+					<h4>{{item.name}}</h4>
+				</label>
+			</span>
+
+			<label for="onSale">
+				<input type="checkbox" ng-model="onSale" id="onSale" ng-change="newSearch()">
+				<em><strong>On Sale</strong></em>
+			</label>
+
+			<br>
+
+			<strong><h4>Sort by:</h4></strong>
+			<select ng-model="searchOrder" ng-change="newSearch()">
+				<option value="">Relevance</option>
+				<option value="limited_time_offer_savings_in_cents.desc">Largest sale discount</option>
+				<option value="price_in_cents.desc">Price (Highest)</option>
+				<option value="price_in_cents.asc">Prince (Lowest)</option>
+				<option value="volume_in_milliliters.desc">Total volume (Highest)</option>
+				<option value="volume_in_milliliters.asc">Total volume (Lowest)</option>
+				<option value="price_per_liter_in_cents.desc">Price per volume (Highest)</option>
+				<option value="price_per_liter_in_cents.asc">Price per volume (Lowest)</option>
+				<option value="inventory_count.desc">Inventory Count (Highest)</option>
+				<option value="inventory_count.asc">Inventory count (Lowest)</option>
+			</select>
+
+			<button class="randomSearchButton" ng-click="randomSearch()">try a random search</button>
+
+			<h4 ng-hide="storeIsFound">Finding your nearest stores...</h4>
+
+			<h4 ng-show="storeIsFound">Nearby stores:
+			<select ng-model="selectedStoreID" ng-change="newSearch()">
+			<option ng-repeat="store in nearestStores" value="{{store.id}}">{{store.name}} at {{store.address_line_1}}</option>
+			</select>
+			</h4>
+		</form>
+
+	</section>
+</nav>

@@ -1,0 +1,23 @@
+<!-- product image -->
+<a href="#/{{data.id}}">
+	<img ng-show="data.image_thumb_url" ng-src="{{data.image_thumb_url}}" ng-class="" alt="image of {{data.name}}">
+	<img ng-show="data.image_thumb_url == null" src="images/bottle.jpeg">
+</a>
+
+<!-- product name -->
+<h3>{{data.name}}</h3>
+
+<!-- primary category -->
+<h4>{{data.secondary_category}}</h4>
+
+<!-- product quantity -->
+<h4>{{data.package | lowercase}}</h4>
+
+<!-- product price and sale price if applicable-->
+<h4 ng-hide="data.has_limited_time_offer">{{0.01 * data.price_in_cents | currency : "$" : 2}}</h4>
+<h4 ng-show="data.has_limited_time_offer">ON SALE! <strike>{{0.01 * data.regular_price_in_cents | currency : $ : 2}}</strike> {{0.01 * data.price_in_cents | currency : $ : 2}}</h4>
+	
+<!-- quantity and low quantity warning -->
+<h4>{{data.quantity}} in stock at {{store_data.name}}</h4>
+<h4 ng-show="data.quantity <= 5"><i ng-show="data.quantity <= 5" class="fa fa-exclamation-triangle"></i>Low stock count. May be out of stock!</h4>
+<h4>Origin: {{data.origin}}</h4>

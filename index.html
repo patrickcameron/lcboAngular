@@ -5,99 +5,17 @@
 	<meta charset="UTF-8">
 	<title>LCBO Search</title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,900,700,700italic,900italic,500,500italic,400italic,300italic,300,100italic,100' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="styles/style.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.15/angular-ui-router.min.js"></script>
 	<script src="scripts/ngGeolocation.min.js"></script>
 	<script src="scripts/localData.js"></script>
 	<script src="scripts/scripts.js"></script>
 </head>
 
-<body ng-controller="searchController">
-	<noscript>
-	  <div class="noJavascript">Javascript is either disabled or not supported in your browser. Please enable it or use a Javascript enabled browser.</div>
-	</noscript>
-
-<!-- SEARCH BAR / CHECKBOXES -->
-
-	<section class="searchBar">
-		<h4 ng-hide="storeIsFound">Finding your nearest stores...</h4>
-
-		<select ng-show="storeIsFound" ng-model="selectedStoreID" ng-change="searchStore()">
-			<option ng-repeat="store in nearestStores" value="{{store.id}}">{{store.name}} at {{store.address_line_1}}</option>
-		</select>
-
-		<form ng-submit="searchStore()" class="searchForm" novalidate norefresh>
-
-			<input type="search" ng-change="newSearch()" ng-model="search" autofocus />
-
-			<span ng-repeat="item in checkboxes">
-				<label for="{{item.name}}">
-					<input type="checkbox" ng-model="item.checked" ng-click="updateSelection($index, checkboxes)" id="{{item.name}}" ng-change="newSearch()" />
-					{{item.name}}
-				</label>
-			</span>
-
-			<label for="onSale">
-				<input type="checkbox" ng-model="onSale" id="onSale" ng-change="newSearch()">
-				<em><strong>On Sale</strong></em>
-			</label>
-
-			<br>
-
-			<strong>Sort by:</strong>
-			<select ng-model="searchOrder" ng-change="newSearch()">
-				<option value="">Relevance</option>
-				<option value="price_in_cents.desc">Price (Highest)</option>
-				<option value="price_in_cents.asc">Prince (Lowest)</option>
-				<option value="volume_in_milliliters.desc">Total volume (Highest)</option>
-				<option value="volume_in_milliliters.asc">Total volume (Lowest)</option>
-				<option value="price_per_liter_in_cents.desc">Price per volume (Highest)</option>
-				<option value="price_per_liter_in_cents.asc">Price per volume (Lowest)</option>
-				<option value="limited_time_offer_savings_in_cents.desc">Largest sale discount</option>
-			</select>
-
-		</form>
-	
-		<button ng-click="randomSearch()">random search</button>
-
-	</section>
-
-<!-- RESULTS SECTION -->
-
-	<main class="resultWrapper">
-
-		<section class="noResultsMessage" ng-show="showNoResultsMessage">
-			<h1>NO RESULTS!</h1>
-		</section>
-
-		<section class="result" ng-repeat="data in lcbo_data" ng-show="{{data.quantity > 0}}">
-
-			<!-- product image -->
-			<img ng-show="data.image_thumb_url" ng-src="{{data.image_thumb_url}}" ng-class="" alt="image of {{data.name}}">
-			<img ng-show="data.image_thumb_url == null" src="images/bottle.jpeg">
-
-			<!-- product name -->
-			<h3>{{data.name}}</h3>
-
-			<!-- primary category -->
-			<h4>{{data.secondary_category}}</h4>
-
-			<!-- product quantity -->
-			<h4>{{data.package | lowercase}}</h4>
-
-			<!-- product price and sale price if applicable-->
-			<h4 ng-hide="data.has_limited_time_offer">{{0.01 * data.price_in_cents | currency : $ : 2}}</h4>
-			<h4 ng-show="data.has_limited_time_offer">ON SALE! <strike>{{0.01 * data.regular_price_in_cents | currency : $ : 2}}</strike> {{0.01 * data.price_in_cents | currency : $ : 2}}</h4>
-		 	
-		 	<!-- quantity and low quantity warning -->
-		 	<h4>{{data.quantity}} in stock at {{store_data.name}}</h4>
-		 	<h4 ng-show="data.quantity <= 5"><i ng-show="data.quantity <= 5" class="fa fa-exclamation-triangle"></i>Low stock count. May be out of stock!</h4>
-		 	<h4>Origin: {{data.origin}}</h4>
-
-		 </section>
-
-	</main>
-
+<body ng-controller="mainController">
+	<section ui-view></section>
 </body>
 </html>
