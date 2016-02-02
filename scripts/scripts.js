@@ -1,5 +1,3 @@
-'use strict';
-
 var app = angular.module('lcboSearch', ['ngGeolocation', 'ui.router']);
 
 app.config(function ($stateProvider) {
@@ -81,22 +79,17 @@ app.controller('mainController', ['$geolocation', '$scope', function ($geolocati
 			        lon: position.coords.longitude
 			    }
 		    }).then(function(data) {
+		    	console.log(data);
 		    	$scope.nearestStores = data.result;
 		    	$scope.selectedStoreID = data.result[0].id;
 		    	$scope.storeIsFound = true;
 		    	$('.loadingMoreResultsMessage').addClass('displayNone');
+		    	$('section.loadingMessage').removeClass('displayFlex');
+		    	$('section.loadingMessage').addClass('displayNone');
 			    $scope.randomSearch();
 		    	$scope.$digest();
 			});
 		});
-
-	// search a random locally stored keyword
-	$scope.randomSearch = function() {
-		$scope.search = suggestedSearches[Math.floor(Math.random()*suggestedSearches.length)];
-
-		$scope.newSearch();
-	};
-
 
 	// search store inventory and return results
 	$scope.searchStore = function() {
@@ -138,7 +131,7 @@ app.controller('mainController', ['$geolocation', '$scope', function ($geolocati
 	    	filterData(data);		
 	    	if (data.pager.is_final_page === false) {
 	    		loadMoreResults = true;
-	    		$scope.loadMoreProducts();
+	    		// $scope.loadMoreProducts();
 	    	} else if (data.pager.is_final_page === true) {
 	    		loadMoreResults = false;
 	    	}
@@ -193,26 +186,39 @@ app.controller('mainController', ['$geolocation', '$scope', function ($geolocati
         });
       };
 
-    //load more products when scrolled to the bottom of the page
-    var moreResultsLoading;
 
-    $scope.loadMoreProducts = function() {
-	    if (loadMoreResults === true) {
-	    	$('.loadingMoreResultsMessage').removeClass('displayNone');
-		    $(window).scroll(function () {
-		            if ($(document).height() <= $(window).scrollTop() + $(window).height()) {
-		                	pageNumber++;
-		                	loadMoreResults = false;
-		                	moreResultsLoading = setTimeout($scope.searchStore, 800);
-		            }
-		    });
-		}
+	// search a random locally stored keyword
+	$scope.randomSearch = function() {
+		$scope.search = suggestedSearches[Math.floor(Math.random()*suggestedSearches.length)];
+
+		$scope.newSearch();
 	};
+
+
+    //load more products when scrolled to the bottom of the page
+ //    var moreResultsLoading;
+
+ //    $scope.loadMoreProducts = function() {
+	//     if (loadMoreResults === true) {
+	//     	$('.loadingMoreResultsMessage').removeClass('displayNone');
+	// 	    $(window).scroll(function () {
+	// 	            if ($(document).height() <= $(window).scrollTop() + $(window).height()) {
+	// 	                	pageNumber++;
+	// 	                	loadMoreResults = false;
+	// 	                	moreResultsLoading = setTimeout($scope.searchStore, 800);
+	// 	            }
+	// 	    });
+	// 	}
+	// };
 }]);
 
-app.controller('singleProduct', ['$scope', function($scope) {
+app.controller('singleProduct', ['$scope', '$stateParams', function($scope, $stateParams) {
+	$scope.showRawData = false;
+	$scope.showHideRawData = function() {
+		$scope.showRawData = $scope.showRawData ? false : true;
+	}
 	$.ajax({
-	    url: 'http://lcboapi.com/products/254946',
+	    url: 'http://lcboapi.com/products/' + $stateParams.id,
 	    dataType: 'jsonp',
 	    method: 'GET',
 	    data: {

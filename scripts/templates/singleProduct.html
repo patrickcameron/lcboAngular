@@ -1,1 +1,7 @@
-<img ng-src="{{singleData.result.image_url}}" alt="picture of {{singleData.result.name}}">
+<div ng-controller="singleProduct">
+	<img ng-src="{{singleData.result.image_thumb_url}}">
+	<h2>{{singleData.result.name}}</h2>
+	<h2 ng-show="{{singleData.result.alcohol_content}}">{{singleData.result.alcohol_content * 0.01}} %</h2>
+	<button ng-click="showHideRawData()">Show Raw LCBO Data</button>
+	<p ng-show="showRawData" ng-repeat="(key, data) in singleData.result"><strong>{{key}}:</strong> {{data}}</p>
+</div>

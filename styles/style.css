@@ -131,48 +131,63 @@ legend, button::-moz-focus-inner, input::-moz-focus-inner {
 body {
   background: white; }
 
-.displayNone {
-  display: none; }
+a {
+  outline: 0; }
+
+section.loadingMessage {
+  position: fixed;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #f1f1f1;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-flex-direction: column;
+      -ms-flex-direction: column;
+          flex-direction: column; }
 
 search-bar {
   width: 100%;
   position: fixed;
   top: 0;
   background: rgba(241, 241, 241, 0.9);
-  z-index: 999;
+  z-index: 2;
   padding: 10px 10px 10px 20px; }
-  search-bar nav.searchBar {
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-justify-content: flex-start;
-        -ms-flex-pack: start;
-            justify-content: flex-start; }
-    search-bar nav.searchBar .randomSearchButton {
-      width: 200px; }
-    search-bar nav.searchBar form {
-      line-height: 2; }
-    search-bar nav.searchBar h4 {
-      margin: 10px 10px 10px 0;
-      display: inline;
-      font-weight: 500; }
-
-section.searchOptions {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-wrap: wrap;
-      -ms-flex-wrap: wrap;
-          flex-wrap: wrap;
-  -webkit-flex-direction: column;
-      -ms-flex-direction: column;
-          flex-direction: column; }
-
-label {
-  white-space: nowrap; }
-
-input[type=search]:focus, button {
-  outline: none; }
+  search-bar nav.searchBar form {
+    line-height: 2;
+    text-align: center; }
+  search-bar nav.searchBar span.searchBarSection {
+    white-space: nowrap;
+    display: inline;
+    margin-right: 20px; }
+  search-bar nav.searchBar label {
+    white-space: nowrap; }
+  search-bar nav.searchBar input[type=text] {
+    width: 300px; }
+  search-bar nav.searchBar input[type=search]:focus, search-bar nav.searchBar button {
+    outline: none; }
+  search-bar nav.searchBar h4 {
+    margin: 10px 10px 10px 0;
+    display: inline;
+    font-weight: 500; }
+  search-bar nav.searchBar h4.sortBy {
+    margin-left: 10px; }
+  search-bar nav.searchBar div.searchTextBar {
+    position: relative;
+    display: inline-block; }
+    search-bar nav.searchBar div.searchTextBar i {
+      position: absolute;
+      top: 9px;
+      right: 0px;
+      font-size: 14px;
+      color: grey;
+      cursor: pointer; }
 
 .resultWrapper {
   width: 100%;
@@ -204,7 +219,10 @@ h3 {
   display: block;
   font-weight: 700; }
 
-div.onSaleTag {
-  position: absolute;
-  top: 0;
-  right: 0; }
+.displayNone {
+  display: none; }
+
+.displayFlex {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex; }
