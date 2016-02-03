@@ -68,6 +68,7 @@ app.controller('mainController', ['$geolocation', '$scope', function ($geolocati
 	$geolocation.getCurrentPosition({
 			timeout: 60000
 		}).then(function(position) {
+			$('h2.loadingMessage').text('Finding nearby LCBO stores...');
 			$.ajax({
 			    url: 'http://lcboapi.com/stores',
 			    dataType: 'jsonp',
