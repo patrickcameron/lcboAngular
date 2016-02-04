@@ -4,11 +4,11 @@ app.config(function ($stateProvider) {
 	$stateProvider.state('index', {
 		url: '',
 		controller: 'mainController',
-		templateUrl: 'scripts/templates/mainController.html'
+		templateUrl: 'scripts/templates/mainCtrl.html'
 	}).state('single', {
 		url: '/:id',
 		controller: 'singleProduct',
-		templateUrl: 'scripts/templates/singleProduct.html'
+		templateUrl: 'scripts/templates/singleCtrl.html'
 	});
 });
 

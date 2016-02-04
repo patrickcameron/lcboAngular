@@ -16,7 +16,10 @@
 				<div class="searchTextBar">
 					<input type="text" ng-change="newSearch()" ng-model="search" placeholder="Brand, country, region, type..." autofocus />
 
-					<a ng-click="search = ''">
+					<a ng-click="randomSearch()">
+						<i class="fa fa-refresh randomSearchButton"></i>
+					</a>
+					<a ng-click="search = ''; newSearch()">
 						<i class="fa fa-times clearSearchButton"></i>
 					</a>
 				</div>
@@ -50,6 +53,7 @@
 				</select>
 			</span>
 		</form>
-
 	</section>
+
+	<div class="infoBox"><p>?</p></div>
 </nav>

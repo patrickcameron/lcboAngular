@@ -1,3 +1,19 @@
+<!-- sale tag -->
+<div class="infoTags">
+	<div class="infoTag saleTag" ng-show="data.has_limited_time_offer">
+		<h3>On Sale</h3>
+	</div>
+	<div class="infoTag vqaTag" ng-show="data.is_vqa">
+		<h3>VQA</h3>
+	</div>
+	<div class="infoTag ocbTag" ng-show="data.is_ocb">
+		<h3>OCB</h3>
+	</div>
+	<div class="infoTag vintagesTag" ng-show="data.stock_type == 'VINTAGES'">
+		<h5>Vintages</h5>
+	</div>
+</div>
+
 <!-- product image -->
 <a href="#/{{data.id}}" target="_blank">
 	<img ng-show="data.image_thumb_url" ng-src="{{data.image_thumb_url}}">
@@ -18,9 +34,9 @@
 
 <!-- product price and sale price if applicable-->
 <h4 ng-hide="data.has_limited_time_offer">{{0.01 * data.price_in_cents | currency : "$" : 2}}</h4>
-<h4 ng-show="data.has_limited_time_offer">ON SALE! <strike>{{0.01 * data.regular_price_in_cents | currency : $ : 2}}</strike> {{0.01 * data.price_in_cents | currency : $ : 2}}</h4>
+<h4 ng-show="data.has_limited_time_offer"><strike>{{0.01 * data.regular_price_in_cents | currency : $ : 2}}</strike> <span class="salePrice">{{0.01 * data.price_in_cents | currency : $ : 2}}</span></h4>
 	
 <!-- quantity and low quantity warning -->
 <h4>{{data.quantity}} in stock at {{store_data.name}}</h4>
-<h4 ng-show="data.quantity <= 5"><i ng-show="data.quantity <= 5" class="fa fa-exclamation-triangle"></i>Low stock count. May be out of stock!</h4>
+<p ng-show="data.quantity <= 5"><i ng-show="data.quantity <= 5" class="fa fa-exclamation-triangle"></i>Low stock count. May be out of stock!</p>
 <h4>Origin: {{data.origin}}</h4>
