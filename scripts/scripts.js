@@ -1,3 +1,5 @@
+NProgress.configure({ showSpinner: false });
+
 var app = angular.module('lcboSearch', ['ngGeolocation', 'ui.router']);
 
 app.config(function ($stateProvider) {
@@ -38,6 +40,10 @@ app.controller('mainController', ['$geolocation', '$scope', function ($geolocati
 				data.result[i].origin = data.result[i].origin;
 			}
 
+			if (data.result[i].origin.substring(data.result[i].origin.length-0, data.result[i].origin.length-5) == ", N/A" ) {
+				data.result[i].origin = data.result[i].origin.slice(0, data.result[i].origin.length-5);
+			}
+
 			// add spaces around 'x' in quantity information (eg. "2x250 ml --> 2 x 250 ml")
 			if (data.result[i].package !== null && data.result[i].package.charAt(1) == 'x') {
 				data.result[i].package = data.result[i].package.charAt(0) + ' ' + data.result[i].package.charAt(1) + ' ' + data.result[i].package.substring(2);
@@ -65,35 +71,43 @@ app.controller('mainController', ['$geolocation', '$scope', function ($geolocati
 	};
 
 	//use browser location to find closest LCBO stores
-	$geolocation.getCurrentPosition({
-			timeout: 60000
-		}).then(function(position) {
-			$('h2.loadingMessage').text('Finding nearby LCBO stores...');
-			$.ajax({
-			    url: 'http://lcboapi.com/stores',
-			    dataType: 'jsonp',
-			    method: 'GET',
-			    data: {
-			        key: lcboKey,
-			        per_page: 5,
-			        lat: position.coords.latitude,
-			        lon: position.coords.longitude
-			    }
-		    }).then(function(data) {
-		    	console.log(data);
-		    	$scope.nearestStores = data.result;
-		    	$scope.selectedStoreID = data.result[0].id;
-		    	$scope.storeIsFound = true;
-		    	$('.loadingMoreResultsMessage').addClass('displayNone');
-		    	$('section.loadingMessage').removeClass('displayFlex');
-		    	$('section.loadingMessage').addClass('displayNone');
-			    $scope.randomSearch();
-		    	$scope.$digest();
+	$scope.getUserLocation = function() {
+		NProgress.start();
+		$geolocation.getCurrentPosition({
+				timeout: 60000
+			}).then(function(position) {
+				$('h2.loadingMessage').text('Finding nearby LCBO stores...');
+				$.ajax({
+				    url: 'http://lcboapi.com/stores',
+				    dataType: 'jsonp',
+				    method: 'GET',
+				    data: {
+				        key: lcboKey,
+				        per_page: 5,
+				        lat: position.coords.latitude,
+				        lon: position.coords.longitude
+				    }
+			    }).then(function(data) {
+			    	console.log(data);
+			    	$scope.nearestStores = data.result;
+			    	$scope.selectedStoreID = data.result[0].id;
+			    	$scope.storeIsFound = true;
+			    	$('.loadingMoreResultsMessage').addClass('displayNone');
+			    	$('section.loadingMessage').removeClass('displayFlex');
+			    	$('section.loadingMessage').addClass('displayNone');
+				    $scope.randomSearch();
+			    	$scope.$digest();
+			    	NProgress.done();
+				});
 			});
-		});
+	};
+
+	$scope.getUserLocation();
 
 	// search store inventory and return results
 	$scope.searchStore = function() {
+
+		NProgress.start();
 
 		$scope.modifyStockCount = false;
 
@@ -142,6 +156,7 @@ app.controller('mainController', ['$geolocation', '$scope', function ($geolocati
 			}
 	    	$scope.$apply();
 	    	$scope.$digest();
+	    	NProgress.done();
 		});
 	};
 
@@ -248,6 +263,12 @@ app.directive('resultsSection', function() {
 app.directive('singleResult', function() {
 	return {
 		restrict: 'E',
-		templateUrl: "scripts/templates/singleSearchResult.html"
+		templateUrl: "scripts/templates/searchResult.html"
 	};
+});
+
+$(function() {
+	$('div.infoBox').click(function() {
+		console.log('it works');
+	})
 });
