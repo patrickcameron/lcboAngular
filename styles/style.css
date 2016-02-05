@@ -192,10 +192,11 @@ section.about {
   position: fixed;
   box-shadow: 0 0 10px black;
   transition: 0.3s all;
-  padding: 12px; }
+  padding: 12px;
+  display: none; }
 
 search-bar {
-  width: calc(100% - 200px);
+  width: 100%;
   position: fixed;
   top: 0;
   background: rgba(241, 241, 241, 0.9);
@@ -259,7 +260,7 @@ search-bar {
       right: 1px; }
 
 .resultWrapper {
-  width: calc(100% - 200px);
+  width: 100%;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;

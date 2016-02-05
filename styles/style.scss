@@ -68,10 +68,11 @@ section.about {
 	box-shadow:0 0 10px black;
 	transition: 0.3s all;
 	padding: 12px;
+	display: none;
 }
 
 search-bar {
-	width: calc(100% - 200px);
+	width: 100%;
 	position: fixed;
 	top: 0;
 	background: rgba(241,241,241,0.9);
@@ -152,7 +153,7 @@ search-bar {
 }
 
 .resultWrapper {
-	width: calc(100% - 200px);
+	width: 100%;
 	display: flex;
 	flex-wrap: wrap;
 	margin-top: 80px;
