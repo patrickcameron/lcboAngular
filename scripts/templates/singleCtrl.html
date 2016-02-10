@@ -1,7 +1,68 @@
-<div ng-controller="singleProduct">
-	<img ng-src="{{singleData.result.image_thumb_url}}">
-	<h2>{{singleData.result.name}}</h2>
-	<h2 ng-show="{{singleData.result.alcohol_content}}">{{singleData.result.alcohol_content * 0.01}} %</h2>
-	<button ng-click="showHideRawData()">Show Raw LCBO Data</button>
-	<p ng-show="showRawData" ng-repeat="(key, data) in singleData.result"><strong>{{key}}:</strong> {{data}}</p>
+<div ng-controller="singleProduct" class="singleProductContainer">
+		<div class="single_productImage">
+			<!-- product image -->
+			<a href="#/{{singleData.product.id}}" target="_blank">
+				<img ng-show="singleData.product.image_thumb_url" ng-src="{{singleData.product.image_thumb_url}}" class="productImage">
+				<img ng-show="singleData.product.image_thumb_url == null" src="images/bottle.jpeg" class="productImage">
+			</a>
+		</div>
+
+		<div class="single_productInfo">
+			<!-- product info tags -->
+			<div class="infoTags">
+				<div class="infoTag saleTag" ng-show="singleData.product.has_limited_time_offer">
+					<h3>On Sale</h3>
+				</div>
+				<div class="infoTag vqaTag" ng-show="singleData.product.is_vqa">
+					<h3>VQA</h3>
+				</div>
+				<div class="infoTag ocbTag" ng-show="singleData.product.is_ocb">
+					<h3>OCB</h3>
+				</div>
+				<div class="infoTag vintagesTag" ng-show="singleData.product.stock_type == 'VINTAGES'">
+					<h5>Vintages</h5>
+				</div>
+				<div class="infoTag kosherTag" ng-show="singleData.product.is_kosher">
+					<h5>Kosher</h5>
+				</div>
+			</div>
+
+			<!-- product name -->
+			<h3>{{singleData.product.name}}</h3>
+
+			<!-- product id -->
+			<h5 ng-show="singleData.product.producer_name">Made by {{singleData.product.producer_name}}</h5>
+			<h5>LCBO ID <a href="'http://www.lcbo.com/lcbo/search?searchTerm=' + {{singleData.product.id}}" target="_blank">{{singleData.product.id}}</a></h5>
+
+			<!-- product price and sale price if applicable-->
+			<h4 ng-hide="singleData.product.has_limited_time_offer"><strong>{{0.01 * singleData.product.price_in_cents | currency : "$" : 2}}</strong></h4>
+			<h4 ng-show="singleData.product.has_limited_time_offer"><strike>{{0.01 * singleData.product.regular_price_in_cents | currency : $ : 2}}</strike> <span class="salePrice"><strong>{{0.01 * singleData.product.price_in_cents | currency : $ : 2}}</strong></span></h4>
+
+			<!-- product quantity -->
+			<h4>{{singleData.product.package | lowercase}}</h4>
+
+			<!-- categories -->
+			<h4 ng-show="singleData.product.primary_category">{{singleData.product.primary_category}}
+			<span ng-show="singleData.product.secondary_category"> / {{singleData.product.secondary_category}}</span></h4>
+			
+			<!-- varietal -->
+			<h4 ng-show="singleData.product.varietal"><strong>Varietal:</strong> {{singleData.product.varietal}}</h4>
+
+			<!-- style -->
+			<h4 ng-show="singleData.product.style"><strong>Style:</strong> {{singleData.product.style}}</h4>
+
+			<!-- origin -->
+			<h4><strong>Origin:</strong> {{singleData.product.origin}}</h4>
+
+			<h4 ng-show="singleData.product.serving_suggestion"><strong>Serving Suggestion:</strong> {{singleData.product.serving_suggestion}}</h4>
+
+			<h4 ng-show="singleData.product.tasting_note"><strong>Tasting Note:</strong> {{singleData.product.tasting_note}}</h4>
+				
+			<!-- quantity and low quantity warning -->
+			<h3>Nearest Stores With Product in Stock</h3>
+			<div ng-repeat="store in singleData.result">
+				<h4>{{store.quantity}} in stock at {{store.name}} {{store.address_line_1}} <span ng-show="store.address_line_2">{{store.address_line_2}}</span> {{store.city}} tel {{store.telephone}}</h4>
+				<!-- <p ng-show="store.quantity <= 5"><i ng-show="store.quantity <= 5" class="fa fa-exclamation-triangle"></i><strong>Low stock count. May be out of stock!</strong></p> -->
+			</div>
+		</div>
 </div>

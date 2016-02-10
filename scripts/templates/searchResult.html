@@ -1,4 +1,4 @@
-<!-- sale tag -->
+<!-- product info tags -->
 <div class="infoTags">
 	<div class="infoTag saleTag" ng-show="data.has_limited_time_offer">
 		<h3>On Sale</h3>
@@ -19,8 +19,8 @@
 
 <!-- product image -->
 <a href="#/{{data.id}}" target="_blank">
-	<img ng-show="data.image_thumb_url" ng-src="{{data.image_thumb_url}}">
-	<img ng-show="data.image_thumb_url == null" src="images/bottle.jpeg">
+	<img ng-show="data.image_thumb_url" ng-src="{{data.image_thumb_url}}" class="productImage">
+	<img ng-show="data.image_thumb_url == null" src="images/bottle.jpeg" class="productImage">
 </a>
 
 <!-- product name -->

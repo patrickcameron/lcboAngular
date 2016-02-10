@@ -16,7 +16,6 @@ app.config(function ($stateProvider) {
 
 app.controller('mainController', ['$geolocation', '$scope', function ($geolocation, $scope) {
 
-	var pageNumber = 1;
 	$scope.nearestStores = [];
 	$scope.storeIsFound = false;
 	$scope.selectedStoreID;
@@ -210,40 +209,31 @@ app.controller('mainController', ['$geolocation', '$scope', function ($geolocati
 		$scope.newSearch();
 	};
 
-
-    //load more products when scrolled to the bottom of the page
- //    var moreResultsLoading;
-
- //    $scope.loadMoreProducts = function() {
-	//     if (loadMoreResults === true) {
-	//     	$('.loadingMoreResultsMessage').removeClass('displayNone');
-	// 	    $(window).scroll(function () {
-	// 	            if ($(document).height() <= $(window).scrollTop() + $(window).height()) {
-	// 	                	pageNumber++;
-	// 	                	loadMoreResults = false;
-	// 	                	moreResultsLoading = setTimeout($scope.searchStore, 800);
-	// 	            }
-	// 	    });
-	// 	}
-	// };
 }]);
 
-app.controller('singleProduct', ['$scope', '$stateParams', function($scope, $stateParams) {
-	$scope.showRawData = false;
-	$scope.showHideRawData = function() {
-		$scope.showRawData = $scope.showRawData ? false : true;
-	}
-	$.ajax({
-	    url: 'http://lcboapi.com/products/' + $stateParams.id,
-	    dataType: 'jsonp',
-	    method: 'GET',
-	    data: {
-	        key: lcboKey
-	    	}
-	    }).then(function(data) {
-	    	console.log(data);
-	    	$scope.singleData = data;
-		});
+app.controller('singleProduct', ['$geolocation', '$scope', '$stateParams', function($geolocation, $scope, $stateParams) {
+	NProgress.start();
+ 	$geolocation.getCurrentPosition({
+ 			timeout: 10000
+ 		}).then(function(position) {
+ 			$.ajax({
+ 			    url: 'http://lcboapi.com/stores',
+ 			    dataType: 'jsonp',
+ 			    method: 'GET',
+ 			    data: {
+ 			        key: lcboKey,
+ 			        per_page: 5,
+ 			        lat: position.coords.latitude,
+ 			        lon: position.coords.longitude,
+ 			        product_id: $stateParams.id
+ 			    }
+ 		    }).then(function(data) {
+ 		    	console.log(data);
+ 		    	$scope.singleData = data;
+ 		    	$scope.$digest();
+ 		    	NProgress.done();
+ 			});
+ 		});
 }]);
 
 app.directive('searchBar', function() {
@@ -265,10 +255,4 @@ app.directive('singleResult', function() {
 		restrict: 'E',
 		templateUrl: "scripts/templates/searchResult.html"
 	};
-});
-
-$(function() {
-	$('div.infoBox').click(function() {
-		console.log('it works');
-	})
 });
