@@ -95,7 +95,6 @@ app.controller('mainController', ['$geolocation', '$scope', function ($geolocati
 				        lon: position.coords.longitude
 				    }
 			    }).then(function(data) {
-			    	console.log(data);
 			    	$scope.nearestStores = data.result;
 			    	$scope.selectedStoreID = data.result[0].id;
 			    	$scope.storeIsFound = true;
@@ -149,7 +148,6 @@ app.controller('mainController', ['$geolocation', '$scope', function ($geolocati
 	        q: $scope.search
 	    	}
 	    }).then(function(data) {
-	    	console.log(data);
 	    	filterData(data);		
 	    	if (data.pager.is_final_page === false) {
 	    		loadMoreResults = true;
@@ -236,7 +234,6 @@ app.controller('singleProduct', ['$geolocation', '$scope', '$stateParams', funct
  			        product_id: $stateParams.id
  			    }
  		    }).then(function(data) {
- 		    	console.log(data);
  		    	$scope.singleData = data;
  		    	$scope.$digest();
  		    	NProgress.done();
