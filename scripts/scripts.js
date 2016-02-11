@@ -1,4 +1,12 @@
+// configure progress bar
 NProgress.configure({ showSpinner: false });
+
+// display current year in footer
+var currentTime = new Date();
+var currentYear = currentTime.getFullYear();
+$(function() {
+	$('span.year').text(currentYear);
+});
 
 var app = angular.module('lcboSearch', ['ngGeolocation', 'ui.router']);
 
